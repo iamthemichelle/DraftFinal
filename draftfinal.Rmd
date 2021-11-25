@@ -1,0 +1,58 @@
+---
+title: "FINAL PROJECT"
+author: 'Michelle Pogue & Gerardo Hernandez'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## 'Introduction'
+
+
+```{r}
+Billionaire_data <- read.csv('/Users/17135/OneDrive/DATA 2401/Billionaire.csv', stringsAsFactors = F)
+a
+```
+
+## 'Packages Required'
+
+
+```{r}
+
+
+```
+
+## 'Data Required'
+
+
+```{r}
+
+
+```
+
+## 'Data Preperation'
+
+
+```{r}
+
+
+```
+
+## 'Exploratory Data Analysis'
+
+
+```{r}
+
+
+```
+
+## 'Summary'
+
+
+```{r}
+
+
+```
+
+
