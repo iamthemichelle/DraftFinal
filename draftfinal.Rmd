@@ -47,7 +47,12 @@ glimpse(tuition_data)
 
 
 ```{r}
+#We want to know ones who make the most money, lets filter out the top 8 billionaires. 
+top_money<- billionaire_data %>%
+  arrange(Rank) %>%
+  head(8)
 
+top_money 
 
 ```
 
