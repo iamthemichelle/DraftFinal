@@ -37,9 +37,9 @@ read.csv('../Final/degrees-that-pay-back.csv')
 
 ```{r}
 Billionaire_data <- read.csv('../Final/Billionaire.csv')
-glimpse(billionaire_data)
+glimpse(Billionaire_data)
 tuition_data <- read.csv('../Final/degrees-that-pay-back.csv')
-glimpse(degrees_money)
+glimpse(tuition_data)
 
 ```
 
