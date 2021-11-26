@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 Billionaire_data <- read.csv('/Users/17135/OneDrive/DATA 2401/Billionaire.csv', stringsAsFactors = F)
-a
+tuition_data <- read.csv('/Users/17135/OneDrive/DATA 2401/degrees-that-pay-back.csv', stringsAsFactors = F)
 ```
 
 ## 'Packages Required'
