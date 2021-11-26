@@ -43,7 +43,11 @@ a
 
 
 ```{r}
+top_money <- billionaire %>%
+  arrange(Rank) %>%
+  head(8)
 
+top_money 
 
 ```
 
