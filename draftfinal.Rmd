@@ -28,17 +28,17 @@ library(dplyr)
 
 
 ```{r}
-read.csv('../Final/Billionaire.csv')
-read.csv('../Final/degrees-that-pay-back.csv')
+read.csv('../DATA 2401/Billionaire.csv', stringsAsFactors = F)
+read.csv('../DATA 2401/degrees-that-pay-back.csv',stringsAsFactors = F)
 ```
 
 ## 'Data Preperation'
 
 
 ```{r}
-Billionaire_data <- read.csv('../Final/Billionaire.csv')
+Billionaire_data <- read.csv('../DATA 2401/Billionaire.csv', stringsAsFactors = F)
 glimpse(Billionaire_data)
-tuition_data <- read.csv('../Final/degrees-that-pay-back.csv')
+tuition_data <- read.csv('../DATA 2401/degrees-that-pay-back.csv',stringsAsFactors = F)
 glimpse(tuition_data)
 
 ```
