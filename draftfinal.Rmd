@@ -54,6 +54,13 @@ top_money<- billionaire_data %>%
 
 top_money 
 
+
+#We want to know what schools make the most starting salary. 
+top_salary_schools <- tuition_data %>%
+  arrange(desc(Starting.Median.Salary)) %>%
+  head(8)
+
+top_salary_schools
 ```
 
 ## 'Summary'
