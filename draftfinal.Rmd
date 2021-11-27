@@ -8,35 +8,41 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 ## 'Introduction'
-
-
-```{r}
-Billionaire_data <- read.csv('/Users/17135/OneDrive/DATA 2401/Billionaire.csv', stringsAsFactors = F)
-salary_data <- read.csv('/Users/17135/OneDrive/DATA 2401/degrees-that-pay-back.csv', stringsAsFactors = F)
-tuition_data <- read.csv('/Users/17135/OneDrive/DATA 2401/collegedataset(1).csv', stringsAsFactors = F)
-
-```
-
+What would you do if you were a billionaire? Becoming a billionaire seems like a difficult task to many. But to the top 1% it seems to come easy. In this project we will explore the top billionaires in the world. using their respective industries we will further explore whether working in those industries is a good idea. The salaries we will explore come from a data set published by the wall street journal that analyzes what degrees pay back. In other words, what current degrees give you your moneys worth. We will dive in even deeper and analyze the cost of the current tuition to work in the top 10 industries billionaires compete in. Hopefully after are project you will have a broader idea if your major will get you closer to becoming a billionaire!
 ## 'Packages Required'
 
-
 ```{r}
+library(tidyverse)#We will use this one to analyze and manipulate data in our project
+library(ggplot2)#We use this for plotting purposes
+library(modeest)#We used this library to find the mode (the value that appears most often in a set of data) of the billionaire industries!
 
+#Reading in all data to start our project!
+Billionaire_data <- read.csv('/Users/17135/OneDrive/DATA 2401/Billionaire.csv', stringsAsFactors = F)#The billionaire data set
+salary_data <- read.csv('/Users/17135/OneDrive/DATA 2401/degrees-that-pay-back.csv', stringsAsFactors = F)#The salary by majors data set
+tuition_data <- read.csv('/Users/17135/OneDrive/DATA 2401/collegedataset(1).csv', stringsAsFactors = F)#Tuition cost data set
 
 ```
 
-## 'Data Required'
-
-
-```{r}
-
-
-```
 
 ## 'Data Preperation'
-
-
+[Forbes Billionaires Of 2021](https://www.kaggle.com/roysouravcu/forbes-billionaires-of-2021)
+The first data set we used is the Forbes Billionaires of 2021. We got the data set from kaggle. It was published on 'Sourav Roy'. It appears that the list is updated annually. The data set contains information about all billionaires in the world and basic information about them. The age of the billionaires contained a missing information so we had to clean up the data using na.omit.
 ```{r}
+Billionaire_data$Age=na.omit(Billionaire_data$Age)
+head(Billionaire_data)
+```
+
+[Degrees That Pay Back](https://www.kaggle.com/wsj/college-salaries)
+The next data set that we used is The "Degrees that pay back" data set. It was published by The Wall Street Journal. It has no direct person who uploaded it to kaggle but it was last updated in 2017. This date set actually is broken up into three different data sets: Degrees that pay back, Salaries by college, and salaries by region. We will only focus on the Degrees that pay back data set.It contains information on the the top 50 degrees based on salaries earned from it. All information 
+```{r}
+#checking for missing data
+sum(is.na(salary_data))#All data is available so we do not have to clean up the data.
+head(salary_data)
+
+```
+I needed to connect both data sets so I created a new column 'Industry' for the salary data set.
+```{r}
+salary_data$Industry=c("Finance & Investments",   "Construction & Engineering","Logistics","Service",  "Construction & Engineering","Service", "Service", "Logistics",   "Construction & Engineering", "Service",  "Construction & Engineering", "Service",   "Construction & Engineering",   "Technology",   "Construction & Engineering", "Service",   "Media & Entertainment", "Finance & Investments", "Service",   "Construction & Engineering", "Service",  "Media & Entertainment",  "Finance & Investments", "Service", "Service","Service", "Technology", "Healthcare", "Service","Service",   "Construction & Engineering",  "Technology", "Fashion & Retail","Logistics", "Media & Entertainment", "Logistics", "Logistics",  "Service",   "Construction & Engineering",  "Media & Entertainment",  "Healthcare", "Healthcare", "Service", "Healthcare", "Service", "Service", "Service", "Service", "Service", "Service")
 
 
 ```
