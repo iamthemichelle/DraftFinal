@@ -28,19 +28,24 @@ tuition_data <- read.csv('/Users/17135/OneDrive/DATA 2401/collegedataset(1).csv'
 [Forbes Billionaires Of 2021](https://www.kaggle.com/roysouravcu/forbes-billionaires-of-2021)
 The first data set we used is the Forbes Billionaires of 2021. We got the data set from kaggle. It was published on 'Sourav Roy'. It appears that the list is updated annually. The data set contains information about all billionaires in the world and basic information about them. The age of the billionaires contained a missing information so we had to clean up the data using na.omit.
 ```{r}
-Billionaire_data$Age=na.omit(Billionaire_data$Age)
+#All data in the billionaire data set are inputted as characters so we changed a few to numeric values.
+Billionaire_data$Age=as.numeric(Billionaire_data$Age)
+#checking for missing data
+sum(is.na(Billionaire_data))
+Billionaire_data= na.omit(Billionaire_data)
 head(Billionaire_data)
 ```
 
 [Degrees That Pay Back](https://www.kaggle.com/wsj/college-salaries)
-The next data set that we used is The "Degrees that pay back" data set. It was published by The Wall Street Journal. It has no direct person who uploaded it to kaggle but it was last updated in 2017. This date set actually is broken up into three different data sets: Degrees that pay back, Salaries by college, and salaries by region. We will only focus on the Degrees that pay back data set.It contains information on the the top 50 degrees based on salaries earned from it. All information 
+The next data set that we used is The "Degrees that pay back" data set. It was published by The Wall Street Journal. It has no direct person who uploaded it to kaggle but it was last updated in 2017. This data set actually is broken up into three different data sets: Degrees that pay back, Salaries by college, and salaries by region. We will only focus on the Degrees that pay back data set.It contains information on the the top 50 degrees based on salaries earned from it. 
 ```{r}
 #checking for missing data
 sum(is.na(salary_data))#All data is available so we do not have to clean up the data.
+
 head(salary_data)
 
 ```
-I needed to connect both data sets so I created a new column 'Industry' for the salary data set.
+We needed to connect both data sets so we created a new column 'Industry' for the salary data set. We did this by placing each degree in it's respective industry.
 ```{r}
 salary_data$Industry=c("Finance & Investments",   "Construction & Engineering","Logistics","Service",  "Construction & Engineering","Service", "Service", "Logistics",   "Construction & Engineering", "Service",  "Construction & Engineering", "Service",   "Construction & Engineering",   "Technology",   "Construction & Engineering", "Service",   "Media & Entertainment", "Finance & Investments", "Service",   "Construction & Engineering", "Service",  "Media & Entertainment",  "Finance & Investments", "Service", "Service","Service", "Technology", "Healthcare", "Service","Service",   "Construction & Engineering",  "Technology", "Fashion & Retail","Logistics", "Media & Entertainment", "Logistics", "Logistics",  "Service",   "Construction & Engineering",  "Media & Entertainment",  "Healthcare", "Healthcare", "Service", "Healthcare", "Service", "Service", "Service", "Service", "Service", "Service")
 
@@ -48,12 +53,123 @@ salary_data$Industry=c("Finance & Investments",   "Construction & Engineering","
 ```
 
 ## 'Exploratory Data Analysis'
+In this part of the project we will start to explore the data sets. We will start with the Billionaire data set!
+What is the average age of all billionaires? Oldest billionaire? Youngest?
 
+```{r}
+mean(Billionaire_data$Age)#Average age of all Billionaires
+
+Billionaire_data %>% 
+  filter(Age==min(Age)) #The youngest
+
+Billionaire_data %>% #The oldest
+  filter(Age==max(Age))
+```
+Let's continue to explore this data set!
+What country has the most Billionaires?
+
+```{r}
+Billionaire_data %>% 
+  group_by(Country) %>% 
+  tally() %>% 
+  arrange(desc(n))
+```
+Now Let's plot this!
+```{r}
+ggplot(data = Billionaire_data) + 
+     geom_bar(mapping = aes(x = Country, fill = Country))
+```
+
+
+This graph is actually hard to read so lets utilize the top 100 Billionaires to have a better visual!
+```{r}
+Billionaire_data %>% 
+  head(100) %>% 
+  ggplot() + geom_bar(mapping = aes(x = Country, fill = Country))
+
+```
+Another question that can be asked from this data set is, what industry has the most billionaires?
+```{r}
+Billionaire_data %>% 
+  group_by(Industry) %>% 
+  tally() %>% 
+  arrange(desc(n))
+
+```
+```{r}
+ggplot(data = Billionaire_data) + 
+     geom_bar(mapping = aes(x = Industry, fill = Industry))
+
+```
+
+
+We can see that the Finance & Investments Industry produces the most billionaires. Let's now jump over to the salary Data set to see how that industry is currently doing. We will start off by exploring the data set first and then applying the information we just produced!
+-What degree starting pay is the most/least? 
+
+
+```{r}
+salary_data %>% 
+  filter(Starting.Median.Salary==max(Starting.Median.Salary))
+
+```
+```{r}
+salary_data %>% 
+  filter(Starting.Median.Salary==min(Starting.Median.Salary))
+
+```
+
+
+-What degree is more promising in the long run? Least?
+```{r}
+salary_data %>% 
+  filter(Percent.change.from.Starting.to.Mid.Career.Salary==max(Percent.change.from.Starting.to.Mid.Career.Salary))
+
+```
+```{r}
+salary_data %>% 
+  filter(Percent.change.from.Starting.to.Mid.Career.Salary==min(Percent.change.from.Starting.to.Mid.Career.Salary))
+
+```
+
+Let's look at how salaries are doing based off their respective industry!
+
+```{r}
+
+ggplot(data = salary_data, aes(x =Undergraduate.Major, y = Starting.Median.Salary, color = Industry)) + geom_point(size = 3)
+
+```
+ggplot(data = iris, aes(x = Sepal.Length, y = Sepal.Width, color = Species)) + geom_point(size = 3)
+
+
+Now let's focus on the top 5 Industries that have the most billionaires in them and let's see how those industries are currently doing based on starting pay. 
+
+```{r}
+Billionaire_data %>% 
+  group_by(Industry) %>% 
+  tally() %>% 
+  arrange(desc(n)) %>% 
+  head(5) #Recall these are the top 3 industries
+
+```
+
+
+```{r}
+n=salary_data %>% 
+  filter(Industry %in% c("Finance & Investments", "Technology", "Manufacturing","Fashion & Retail	","Healthcare"))
+print(n)
+```
+
+Now lets plot this data!
 
 ```{r}
 
 
+ggplot(data = n, aes(x =Undergraduate.Major, y = Starting.Median.Salary, color = Industry)) + geom_point(size = 3)
+
 ```
+
+
+Based off this data we can observe that Finance & Investments is not the top earning industry based off starting pay! 
 
 ## 'Summary'
 
