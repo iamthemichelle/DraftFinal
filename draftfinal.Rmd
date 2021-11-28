@@ -16,10 +16,21 @@ library(tidyverse)#We will use this one to analyze and manipulate data in our pr
 library(ggplot2)#We use this for plotting purposes
 library(modeest)#We used this library to find the mode (the value that appears most often in a set of data) of the billionaire industries!
 
+
+install.packages("tidyverse")
+install.packages("readxl")
+install.packages("FactoMineR")
+install.packages("factoextra")
+#Load Libraries
+library(tidyverse)
+library(readxl)
+library(FactoMineR)
+library(factoextra)
+
 #Reading in all data to start our project!
-Billionaire_data <- read.csv('/Users/17135/OneDrive/DATA 2401/Billionaire.csv', stringsAsFactors = F)#The billionaire data set
-salary_data <- read.csv('/Users/17135/OneDrive/DATA 2401/degrees-that-pay-back.csv', stringsAsFactors = F)#The salary by majors data set
-tuition_data <- read.csv('/Users/17135/OneDrive/DATA 2401/collegedataset(1).csv', stringsAsFactors = F)#Tuition cost data set
+Billionaire_data <- read.csv('../Final/billionaire.csv', stringsAsFactors = F)#The billionaire data set
+salary_data <- read.csv('../Final/degrees-that-pay-back.csv', stringsAsFactors = F)#The salary by majors data set
+tuition_data <- read.csv('../Final/degrees-that-pay-back.csv', stringsAsFactors = F)#Tuition cost data set
 
 ```
 
@@ -73,11 +84,11 @@ Billionaire_data %>%
   group_by(Country) %>% 
   tally() %>% 
   arrange(desc(n))
+  
 ```
 Now Let's plot this!
 ```{r}
-ggplot(data = Billionaire_data) + 
-     geom_bar(mapping = aes(x = Country, fill = Country))
+
 ```
 
 
@@ -85,7 +96,8 @@ This graph is actually hard to read so lets utilize the top 100 Billionaires to 
 ```{r}
 Billionaire_data %>% 
   head(100) %>% 
-  ggplot() + geom_bar(mapping = aes(x = Country, fill = Country))
+  ggplot() + geom_bar(mapping = aes(x = Country, fill = Country)) +
+  coord_flip()
 
 ```
 Another question that can be asked from this data set is, what industry has the most billionaires?
@@ -97,8 +109,11 @@ Billionaire_data %>%
 
 ```
 ```{r}
+
+
 ggplot(data = Billionaire_data) + 
-     geom_bar(mapping = aes(x = Industry, fill = Industry))
+     geom_point(mapping = aes(x = Industry, y = Age, color = Industry)) +
+  coord_flip()
 
 ```
 
@@ -135,8 +150,18 @@ Let's look at how salaries are doing based off their respective industry!
 
 ```{r}
 
-ggplot(data = salary_data, aes(x =Undergraduate.Major, y = Starting.Median.Salary, color = Industry)) + geom_point(size = 3)
 
+ ggplot(salary_data, 
+         aes(x = Undergraduate.Major, 
+             y = Starting.Median.Salary, 
+             fill = Industry)) +
+    geom_bar(width = 1, 
+             stat = "identity", 
+             color = "black") +
+    coord_polar("y", 
+                start = 0, 
+                direction = -1) +
+    theme_void()
 ```
 ggplot(data = iris, aes(x = Sepal.Length, y = Sepal.Width, color = Species)) + geom_point(size = 3)
 
@@ -155,7 +180,8 @@ Billionaire_data %>%
 
 ```{r}
 n=salary_data %>% 
-  filter(Industry %in% c("Finance & Investments", "Technology", "Manufacturing","Fashion & Retail	","Healthcare"))
+  filter(Industry %in% c("Finance & Investments", "Technology", "Manufacturing","Fashion & Retail	","Healthcare")) %>%
+  arrange(desc(Percent.change.from.Starting.to.Mid.Career.Salary))
 print(n)
 ```
 
@@ -164,19 +190,15 @@ Now lets plot this data!
 ```{r}
 
 
-ggplot(data = n, aes(x =Undergraduate.Major, y = Starting.Median.Salary, color = Industry)) + geom_point(size = 3)
+ggplot(data = n, aes(x =Undergraduate.Major, y = Percent.change.from.Starting.to.Mid.Career.Salary, color = Industry)) + geom_point(size = 5) + theme(axis.text.x = element_text(angle = 45, 
+                                   hjust = 1))
+
 
 ```
 
 
-Based off this data we can observe that Finance & Investments is not the top earning industry based off starting pay! 
+Based off this data we can observe that Finance & Investments is the top earning industry based off future change in income over time.  
 
 ## 'Summary'
 
-
-```{r}
-
-
-```
-
-
+In conclusion, we were able to see that even though Healthcare started off as the highest paid, Finance and Investments ended up being the top runner for the long-term career choice. The growth that happens is seen from the starting pay to the median career pay, which is not unusual. The better you get at understanding people and their money, the more chance you have at receiving a higher pay rate in finances. Right below it is technology, but this based on the college data set, and not the billionaire data set.  
