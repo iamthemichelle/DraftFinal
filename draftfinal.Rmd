@@ -1,12 +1,12 @@
 ---
-title: "FINAL PROJECT"
-author: 'Michelle Pogue & Gerardo Hernandez'
-output: html_document
+title: "Untitled"
+output: slidy_presentation
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
 ```
+
 ## 'Introduction'
 What would you do if you were a billionaire? Becoming a billionaire seems like a difficult task to many. But to the top 1% it seems to come easy. In this project we will explore the top billionaires in the world. using their respective industries we will further explore whether working in those industries is a good idea. The salaries we will explore come from a data set published by the wall street journal that analyzes what degrees pay back. In other words, what current degrees give you your moneys worth. We will dive in even deeper and analyze the cost of the current tuition to work in the top 10 industries billionaires compete in. Hopefully after are project you will have a broader idea if your major will get you closer to becoming a billionaire!
 ## 'Packages Required'
@@ -14,19 +14,21 @@ What would you do if you were a billionaire? Becoming a billionaire seems like a
 ```{r}
 library(tidyverse)#We will use this one to analyze and manipulate data in our project
 library(ggplot2)#We use this for plotting purposes
-library(modeest)#We used this library to find the mode (the value that appears most often in a set of data) of the billionaire industries!
+#library(modeest)#We used this library to find the mode (the value that appears most often in a set of data) of the billionaire industries!
 
+#install.packages('rmarkdown')
 
-install.packages("tidyverse")
-install.packages("readxl")
-install.packages("FactoMineR")
-install.packages("factoextra")
+#install.packages("tidyverse")
+#install.packages("readxl")
+#install.packages("DT")
+#install.packages("gt")
 #Load Libraries
+#install.packages('unikn')  # install unikn from CRAN client
+library('unikn')
 library(tidyverse)
 library(readxl)
-library(FactoMineR)
-library(factoextra)
-
+library(gt)
+library(DT)
 #Reading in all data to start our project!
 Billionaire_data <- read.csv('../Final/billionaire.csv', stringsAsFactors = F)#The billionaire data set
 salary_data <- read.csv('../Final/degrees-that-pay-back.csv', stringsAsFactors = F)#The salary by majors data set
@@ -44,19 +46,23 @@ Billionaire_data$Age=as.numeric(Billionaire_data$Age)
 #checking for missing data
 sum(is.na(Billionaire_data))
 Billionaire_data= na.omit(Billionaire_data)
-head(Billionaire_data)
+head(Billionaire_data) %>%
+  gt()
 ```
 
 [Degrees That Pay Back](https://www.kaggle.com/wsj/college-salaries)
 The next data set that we used is The "Degrees that pay back" data set. It was published by The Wall Street Journal. It has no direct person who uploaded it to kaggle but it was last updated in 2017. This data set actually is broken up into three different data sets: Degrees that pay back, Salaries by college, and salaries by region. We will only focus on the Degrees that pay back data set.It contains information on the the top 50 degrees based on salaries earned from it. 
+
 ```{r}
 #checking for missing data
 sum(is.na(salary_data))#All data is available so we do not have to clean up the data.
 
-head(salary_data)
+head(salary_data) %>%
+  gt()
 
 ```
 We needed to connect both data sets so we created a new column 'Industry' for the salary data set. We did this by placing each degree in it's respective industry.
+
 ```{r}
 salary_data$Industry=c("Finance & Investments",   "Construction & Engineering","Logistics","Service",  "Construction & Engineering","Service", "Service", "Logistics",   "Construction & Engineering", "Service",  "Construction & Engineering", "Service",   "Construction & Engineering",   "Technology",   "Construction & Engineering", "Service",   "Media & Entertainment", "Finance & Investments", "Service",   "Construction & Engineering", "Service",  "Media & Entertainment",  "Finance & Investments", "Service", "Service","Service", "Technology", "Healthcare", "Service","Service",   "Construction & Engineering",  "Technology", "Fashion & Retail","Logistics", "Media & Entertainment", "Logistics", "Logistics",  "Service",   "Construction & Engineering",  "Media & Entertainment",  "Healthcare", "Healthcare", "Service", "Healthcare", "Service", "Service", "Service", "Service", "Service", "Service")
 
@@ -67,32 +73,59 @@ salary_data$Industry=c("Finance & Investments",   "Construction & Engineering","
 In this part of the project we will start to explore the data sets. We will start with the Billionaire data set!
 What is the average age of all billionaires? Oldest billionaire? Youngest?
 
+
+
 ```{r}
-mean(Billionaire_data$Age)#Average age of all Billionaires
+mean = mean(Billionaire_data$Age) #Average age of all Billionaires
 
-Billionaire_data %>% 
-  filter(Age==min(Age)) #The youngest
+youngest = Billionaire_data %>% 
+  filter(Age==min(Age)) %>%
+  select(Name) #The youngest
 
-Billionaire_data %>% #The oldest
-  filter(Age==max(Age))
+oldest = Billionaire_data %>% #The oldest
+  filter(Age==max(Age)) %>%
+  select(Name)
+
+n <- 20
+set.seed(1)
+par(mar = c(0, 0, 0, 0))
+plot(x = runif(n), y = runif(n), type = "p", pch = 16, cex = 20, col = grey(0, .2),
+     axes = FALSE, xlab = "", ylab = "")
+
+mark(labels = " Average Age of All Billionaires=", x = .02, y = .9)
+mark(labels = mean, x= .02, y = .78)
+mark(labels = c(youngest, oldest),
+     x = c(.1, .6), y = c(.2,.4),
+     col_bg = c(pal_seeblau[[2]], pal_peach[[3]]), cex = 1.2)
 ```
+
 Let's continue to explore this data set!
 What country has the most Billionaires?
 
+
+
 ```{r}
-Billionaire_data %>% 
+Billionaire_Plot <- Billionaire_data %>% 
   group_by(Country) %>% 
   tally() %>% 
-  arrange(desc(n))
-  
+  arrange(desc(n)) %>%
+  gt()
+ 
+Billionaire_Plot 
 ```
 Now Let's plot this!
-```{r}
 
+
+```{r}
+ggplot(Billionaire_data, aes(x = Country, y = Industry), color = industry)+
+  geom_point()
 ```
+
+
 
 
 This graph is actually hard to read so lets utilize the top 100 Billionaires to have a better visual!
+
 ```{r}
 Billionaire_data %>% 
   head(100) %>% 
@@ -101,21 +134,35 @@ Billionaire_data %>%
 
 ```
 Another question that can be asked from this data set is, what industry has the most billionaires?
+
 ```{r}
 Billionaire_data %>% 
   group_by(Industry) %>% 
   tally() %>% 
-  arrange(desc(n))
+  arrange(desc(n)) %>%
+  gt()
 
 ```
+
+
+
+
+
+
+
+
 ```{r}
 
 
 ggplot(data = Billionaire_data) + 
-     geom_point(mapping = aes(x = Industry, y = Age, color = Industry)) +
+     geom_boxplot(mapping = aes(x = Industry, y = Age, color = Industry)) +
   coord_flip()
 
 ```
+
+
+
+
 
 
 We can see that the Finance & Investments Industry produces the most billionaires. Let's now jump over to the salary Data set to see how that industry is currently doing. We will start off by exploring the data set first and then applying the information we just produced!
@@ -124,12 +171,14 @@ We can see that the Finance & Investments Industry produces the most billionaire
 
 ```{r}
 salary_data %>% 
-  filter(Starting.Median.Salary==max(Starting.Median.Salary))
+  filter(Starting.Median.Salary==max(Starting.Median.Salary)) %>%
+  gt()
 
 ```
 ```{r}
 salary_data %>% 
-  filter(Starting.Median.Salary==min(Starting.Median.Salary))
+  filter(Starting.Median.Salary==min(Starting.Median.Salary)) %>%
+  gt()
 
 ```
 
@@ -137,12 +186,14 @@ salary_data %>%
 -What degree is more promising in the long run? Least?
 ```{r}
 salary_data %>% 
-  filter(Percent.change.from.Starting.to.Mid.Career.Salary==max(Percent.change.from.Starting.to.Mid.Career.Salary))
+  filter(Percent.change.from.Starting.to.Mid.Career.Salary==max(Percent.change.from.Starting.to.Mid.Career.Salary)) %>%
+  gt()
 
 ```
 ```{r}
 salary_data %>% 
-  filter(Percent.change.from.Starting.to.Mid.Career.Salary==min(Percent.change.from.Starting.to.Mid.Career.Salary))
+  filter(Percent.change.from.Starting.to.Mid.Career.Salary==min(Percent.change.from.Starting.to.Mid.Career.Salary)) %>%
+  gt()
 
 ```
 
@@ -163,7 +214,7 @@ Let's look at how salaries are doing based off their respective industry!
                 direction = -1) +
     theme_void()
 ```
-ggplot(data = iris, aes(x = Sepal.Length, y = Sepal.Width, color = Species)) + geom_point(size = 3)
+
 
 
 Now let's focus on the top 5 Industries that have the most billionaires in them and let's see how those industries are currently doing based on starting pay. 
@@ -173,25 +224,26 @@ Billionaire_data %>%
   group_by(Industry) %>% 
   tally() %>% 
   arrange(desc(n)) %>% 
-  head(5) #Recall these are the top 3 industries
+  head(5) %>%
+  gt() #Recall these are the top 5 industries
 
 ```
 
 
 ```{r}
-n=salary_data %>% 
+Salary_Plot <- salary_data %>% 
   filter(Industry %in% c("Finance & Investments", "Technology", "Manufacturing","Fashion & Retail	","Healthcare")) %>%
   arrange(desc(Percent.change.from.Starting.to.Mid.Career.Salary))
-print(n)
+
 ```
 
 Now lets plot this data!
 
 ```{r}
 
-
-ggplot(data = n, aes(x =Undergraduate.Major, y = Percent.change.from.Starting.to.Mid.Career.Salary, color = Industry)) + geom_point(size = 5) + theme(axis.text.x = element_text(angle = 45, 
-                                   hjust = 1))
+ggplot(Salary_Plot, aes(Starting.Median.Salary,Mid.Career.Median.Salary, group = Industry, color = Industry)) + 
+  geom_line()+
+  geom_point() + theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5))
 
 
 ```
@@ -201,4 +253,4 @@ Based off this data we can observe that Finance & Investments is the top earning
 
 ## 'Summary'
 
-In conclusion, we were able to see that even though Healthcare started off as the highest paid, Finance and Investments ended up being the top runner for the long-term career choice. The growth that happens is seen from the starting pay to the median career pay, which is not unusual. The better you get at understanding people and their money, the more chance you have at receiving a higher pay rate in finances. Right below it is technology, but this based on the college data set, and not the billionaire data set.  
+In conclusion, we were able to see that even though Healthcare started off as the highest paid, Finance and Investments ended up being the top runner for the long-term career choice. The growth that happens is seen from the starting pay to the median career pay, which is not unusual. The better you get at understanding people and their money, the more chance you have at receiving a higher pay rate in finances. Right below it is technology, but this based on the college data set, and not the billionaire data set.
